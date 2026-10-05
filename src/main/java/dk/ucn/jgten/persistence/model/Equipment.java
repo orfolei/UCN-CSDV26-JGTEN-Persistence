@@ -1,4 +1,4 @@
-package model;
+package dk.ucn.jgten.persistence.model;
 
 public class Equipment extends Product{
 
