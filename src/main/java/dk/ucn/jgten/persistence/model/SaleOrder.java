@@ -47,6 +47,17 @@ public class SaleOrder {
 		orderLineItems.add(orderLineItem);
 	}
 	
+	public double calcPrice()
+	{	
+		double price = 0;
+		for(OrderLineItem line: orderLineItems)
+		{
+			price += line.getLineTotalPrice();
+		}
+		return price;
+	}
+	
+	
 	
 	public int getOrderNo() {
 		return orderNo;
