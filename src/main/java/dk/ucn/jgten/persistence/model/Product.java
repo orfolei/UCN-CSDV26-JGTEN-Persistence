@@ -7,6 +7,9 @@ public class Product {
 	private int minStock;
 	private int reservedQty;
 	
+	private Supplier supplier[];
+	private Price price;
+	
 	
 	public Product(int productNumber ,  String name, int minStock, int reservedQty)
 	{
