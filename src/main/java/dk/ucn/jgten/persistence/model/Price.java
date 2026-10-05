@@ -1,11 +1,13 @@
 package dk.ucn.jgten.persistence.model;
 
+import java.time.LocalDate;
+
 public class Price {
 
-	private String timestamp; //lav det her til en localdate (idk how) - emil
+	private LocalDate timestamp; 
 	private double price;
 	
-	public Price(String timestamp, double price)
+	public Price(LocalDate timestamp, double price)
 	{
 		this.timestamp = timestamp;
 		this.price = price;
