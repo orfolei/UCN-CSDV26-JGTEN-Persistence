@@ -1,5 +1,6 @@
+# Special characters have to be escaped
 db.name=persistence
-db.server.name=127.0.0.1\\SQLEXPRESS
+db.server.name=127.0.0.1\\\\SQLEXPRESS
 db.port=1433
 db.username=sa
-db.password=secretv26!
+db.password=secretv26\!

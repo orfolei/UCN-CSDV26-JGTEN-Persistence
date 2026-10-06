@@ -161,13 +161,14 @@ public class ConfigurationFile implements Configuration {
 					continue;
 				
 				this.properties.put(entry.getKey(), entry.getValue());
+				propertiesAdded++;
 			}
 			
 			if (propertiesAdded > 0) {
 				LOGGER.info("Loaded " + propertiesAdded + " new properties from template file.");
 			}
 			
-			this.properties.store(outputStream, "");
+			this.properties.store(outputStream, "Special characters have to be escaped");
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Failed to import values from template file", e);
 		}
