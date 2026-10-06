@@ -1,4 +1,4 @@
-package dk.ucn.jgten.persistence.core;
+package dk.ucn.jgten.persistence.common;
 
 import java.io.File;
 import java.io.FileInputStream;

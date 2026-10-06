@@ -2,8 +2,8 @@ package dk.ucn.jgten.persistence;
 
 import java.io.IOException;
 
-import dk.ucn.jgten.persistence.core.Configuration;
-import dk.ucn.jgten.persistence.core.ConfigurationFile;
+import dk.ucn.jgten.persistence.common.Configuration;
+import dk.ucn.jgten.persistence.common.ConfigurationFile;
 import dk.ucn.jgten.persistence.database.DBConnection;
 
 public class Main {

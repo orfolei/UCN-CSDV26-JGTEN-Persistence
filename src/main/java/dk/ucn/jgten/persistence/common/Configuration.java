@@ -1,4 +1,4 @@
-package dk.ucn.jgten.persistence.core;
+package dk.ucn.jgten.persistence.common;
 
 public interface Configuration {
 	public String get(String key);

@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import dk.ucn.jgten.persistence.core.Configuration;
+import dk.ucn.jgten.persistence.common.Configuration;
 
 public class DBConnection {
 	private Connection connection = null;
