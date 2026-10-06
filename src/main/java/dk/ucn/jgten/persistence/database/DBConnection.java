@@ -7,38 +7,47 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import dk.ucn.jgten.persistence.core.Configuration;
+
 public class DBConnection {
 	private Connection connection = null;
-	private static DBConnection dbConnection;
 	
-	private static final String driverClass = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-	private static final String dbName = "miniproject";
-	private static final String serverAddress = "localhost";
-	private static final int    serverPort = 1433;
-	private static final String userName = "sa";
-	private static final String password = "secret";
+	private static final String DRIVER_CLASS = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+	private static final String DEFAULT_SERVER_NAME = "127.0.0.1\\SQLEXPRESS";
+	private static final String DEFAULT_DATABASE = "persistence";
+	private static final String DEFAULT_PORT = "1433";
+	private static final String DEFAULT_USERNAME = "sa";
+	private static final String DEFAULT_PASSWORD = "secretv26!";
 	
-	private DBConnection() {
-		String connectionString = String.format("jdbc:sqlserver://%s:%d;databaseName=%s;user=%s;password=%s;encrypt=false", 
-				serverAddress, serverPort, dbName, userName, password);
+	private String database;
+	private String serverAddress;
+	private String port;
+	private String username;
+	private String password;
+	
+	public DBConnection(Configuration config) {
+		this.serverAddress = config.get("db.server.name", DEFAULT_SERVER_NAME);
+		this.port = config.get("db.port", DEFAULT_PORT);
+		this.database = config.get("db.name", DEFAULT_DATABASE);
+		this.username = config.get("db.username", DEFAULT_USERNAME);
+		this.password = config.get("db.password", DEFAULT_PASSWORD);
+		
+		String connectionString = String.format(
+				"jdbc:sqlserver://%s:%s;databaseName=%s;user=%s;password=%s;encrypt=false", 
+				serverAddress, port, database, username, password
+		);
+		
 		try {
-			Class.forName(driverClass);
+			Class.forName(DRIVER_CLASS);
 			connection = DriverManager.getConnection(connectionString);
 		} catch (ClassNotFoundException e) {
 			System.err.println("Could not load JDBC driver");
 			e.printStackTrace();
 		} catch (SQLException e) {
-			System.err.println("Could not connect to database " + dbName + "@" + serverAddress + ":" + serverPort + " as user " + userName + " using password ******");
+			System.err.println("Could not connect to database " + database + "@" + serverAddress + ":" + port + " as user " + username + " using password ******");
 			System.out.println("Connection string was: " + connectionString.substring(0, connectionString.length() - password.length()) + "....");
 			e.printStackTrace();
 		}
-	}
-	
-	public static DBConnection getInstance() {
-		if(dbConnection == null) {
-			dbConnection = new DBConnection();
-		}
-		return dbConnection;
 	}
 	
 	public void startTransaction() throws SQLException {
