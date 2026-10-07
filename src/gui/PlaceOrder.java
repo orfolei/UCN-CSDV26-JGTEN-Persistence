@@ -62,9 +62,9 @@ public class PlaceOrder extends JFrame {
 		contentPane.add(centerPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_centerPanel = new GridBagLayout();
 		gbl_centerPanel.columnWidths = new int[]{0, 0, 0, 0};
-		gbl_centerPanel.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_centerPanel.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gbl_centerPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_centerPanel.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 31, 0};
+		gbl_centerPanel.columnWeights = new double[]{1.0, 1.0, 0.0, Double.MIN_VALUE};
+		gbl_centerPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		centerPanel.setLayout(gbl_centerPanel);
 		
 		JLabel lblWare = new JLabel("Ware:");
@@ -86,7 +86,6 @@ public class PlaceOrder extends JFrame {
 		textField = new JTextField();
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(0, 0, 5, 5);
-		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.gridx = 1;
 		gbc_textField.gridy = 5;
 		centerPanel.add(textField, gbc_textField);
@@ -94,7 +93,6 @@ public class PlaceOrder extends JFrame {
 		
 		JButton btnAdd = new JButton("Add to Cart");
 		GridBagConstraints gbc_btnAdd = new GridBagConstraints();
-		gbc_btnAdd.anchor = GridBagConstraints.ABOVE_BASELINE;
 		gbc_btnAdd.insets = new Insets(0, 0, 0, 5);
 		gbc_btnAdd.gridx = 0;
 		gbc_btnAdd.gridy = 6;
