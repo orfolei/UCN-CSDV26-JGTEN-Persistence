@@ -12,11 +12,19 @@ import java.util.logging.Logger;
 
 /**
  * Primitive file-based configuration system using the `.properties` file format.
+ * Modified to fit the "Persistence" project, with verbose explanitory comments.
+ * 
  * @author Nova Estrid Lautrup
- * @version 06-10-2026
+ * @version 07-10-2026
+ * 
+ * @hidden No AI has been used, neither directly or indirectly.
  */
 public class ConfigurationFile implements Configuration {
+	// todo: decide if logger is too complex for miniproject persistence
 	private static final Logger LOGGER = Logger.getLogger(ConfigurationFile.class.getName());
+	
+	private static final String CONFIG_PATH = "data/config.ini";
+	private static final String TEMPLATE_PATH = "data/config.ini.template";
 	
 	private static ConfigurationFile configuration;
 	
@@ -24,6 +32,7 @@ public class ConfigurationFile implements Configuration {
 	private final File templateFile;
 	private final Properties properties;
 	
+	// constructor private bcs singleton
 	/**
 	 * @param configPath path to configuration file including file extension
 	 * @param templatePath path to a template file that should be initialized as
@@ -33,117 +42,81 @@ public class ConfigurationFile implements Configuration {
 		this.properties = new Properties();
 		this.configFile = new File(configPath).getAbsoluteFile();
 		
+		// we use null checks to see if template is provided, so our
+		// field here should either be the file, or null. using ternary
+		// operator to handle this logic.
 		this.templateFile = (templatePath != null && !templatePath.isEmpty())
 				? new File(templatePath).getAbsoluteFile()
 				: null;
 		
+		// grab values from config file
 		this.load();
+		
+		// add any missing values from the template to our existing config file
+		// saves the changes afterward
 		this.updateFromTemplate();
 	}
 	
-	
-	
+	// can also use this system without a template. expects
+	// the configuration file to already exist at location.
 	private ConfigurationFile(String configPath) {
 		this(configPath, null);
 	}
 	
+	
+	// singleton
 	public static ConfigurationFile getInstance() {
 		if (configuration == null) {
-			configuration = new ConfigurationFile(
-					"data/config.ini", 
-					"data/config.ini.template"
-			);
+			configuration = new ConfigurationFile(CONFIG_PATH, TEMPLATE_PATH);
 		}
 		
 		return configuration;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String get(String key) {
 		return properties.getProperty(key);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String get(String key, String defaultValue) {
 		return properties.getProperty(key, defaultValue);
 	}
 	
-	@Override
-	public boolean getBoolean(String key) {
-		return getParsed(key, null, Boolean::parseBoolean);
-	}
-	
-	@Override
-	public boolean getBoolean(String key, boolean defaultValue) {
-		return getParsed(key, defaultValue, Boolean::parseBoolean);
-	}
-	
-	@Override
-	public int getInt(String key) {
-		return getParsed(key, null, Integer::parseInt);
-	}
-	
-	@Override
-	public int getInt(String key, int defaultValue) {
-		return getParsed(key, defaultValue, Integer::parseInt);
-	}
-	
-	@Override
-	public double getDouble(String key) {
-		return getParsed(key, null, Double::parseDouble);
-	}
-	
-	@Override
-	public double getDouble(String key, double defaultValue) {
-		return getParsed(key, defaultValue, Double::parseDouble);
-	}
-	
-	private <T> T getParsed(String key, T defaultValue, Function<String, T> parser) {
-		String value = get(key);
-		if (value == null)
-			return defaultValue;
-		
-		value = value.trim();
-		
-		try {
-			return parser.apply(value);
-		} catch (IllegalArgumentException e) {
-			if (defaultValue != null) {
-				LOGGER.log(
-						Level.WARNING, 
-						String.format("Config contains value for '%s', but the value '%s' does not match expected type. Returning default value.", key, value)
-				);
-			}
-
-			return defaultValue;
-		}
-	}
-	
+	/**
+	 * Refresh all properties from the config file, create file if not exists.
+	 */
 	private void load() {
+		// refresh entirely, clear existing values
 		this.properties.clear();
-		FileInputStream stream = null;
 		
-		try {
+		try (FileInputStream stream = new FileInputStream(configFile.getAbsolutePath())) {
+			// if the configuration file doesn't exist already
+			// we should create it here...
 			if (!configFile.exists())
 				createFile();
 			
-			// load and parse
-			stream = new FileInputStream(configFile.getAbsolutePath());
+			// java properties has a method to load properties from
+			// files by default. this adds all the key value pairs
+			// to our local field in our object.
 			this.properties.load(stream);
 			
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Failed to load configuration file", e);
-		} finally {
-			if (stream != null) {
-				try {
-					stream.close();
-				} catch (IOException e) {
-					LOGGER.log(Level.WARNING, "Failed to close config file input stream", e);
-				}
-			}
 		}
 	}
 	
+	/**
+	 * Creates the configuration file on disk, including the directory in which it's
+	 * supposed to be located.
+	 * @throws IOException if directories or file couldn't be created - check folder permissions.
+	 */
 	private void createFile() throws IOException {
 		File directory = configFile.getParentFile();
 		
@@ -160,17 +133,32 @@ public class ConfigurationFile implements Configuration {
 		}
 	}
 	
+	/**
+	 * Read template file, add properties from template if they are missing
+	 * from the config file. Saves the changes to the config file when done.
+	 */
 	private void updateFromTemplate() {
-		if (templateFile == null)
+		// guard clause, we don't need to run this code if a template file
+		// hasn't been provided during configuration. 
+		if (this.templateFile == null)
 			return;
 		
+		// input and output streams may fail, but they're autoclosable.
+		// if defined in the "try-with-resources" statement, we don't
+		// have to close them in case of exceptions.
 		try (FileInputStream templateStream = new FileInputStream(templateFile.getAbsolutePath());
 			 FileOutputStream outputStream = new FileOutputStream(configFile)) {
 			
 			Properties templateProperties = new Properties();
 			templateProperties.load(templateStream);
 		
+			// keep track of properties added. nice to know if anything has changed
+			// when executing the program.
 			int propertiesAdded = 0;
+			
+			// loop through the properties in our template file, and check if
+			// a property with the same key already exists in our properties.
+			// if not exists, add it to our properties.
 			for (Entry<Object, Object> entry : templateProperties.entrySet()) {
 				if (this.properties.containsKey(entry.getKey()))
 					continue;
@@ -179,10 +167,12 @@ public class ConfigurationFile implements Configuration {
 				propertiesAdded++;
 			}
 			
+			// log the number of changes, should be visible in console.
 			if (propertiesAdded > 0) {
 				LOGGER.info("Loaded " + propertiesAdded + " new properties from template file.");
 			}
 			
+			// save configuration file
 			this.properties.store(outputStream, "Special characters have to be escaped");
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Failed to import values from template file", e);
