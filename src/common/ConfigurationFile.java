@@ -6,9 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Primitive file-based configuration system using the `.properties` file format.
@@ -17,12 +14,9 @@ import java.util.logging.Logger;
  * @author Nova Estrid Lautrup
  * @version 07-10-2026
  * 
- * @hidden No AI has been used, neither directly or indirectly.
+ * @hidden No AI has been used, neither directly nor indirectly.
  */
 public class ConfigurationFile implements Configuration {
-	// todo: decide if logger is too complex for miniproject persistence
-	private static final Logger LOGGER = Logger.getLogger(ConfigurationFile.class.getName());
-	
 	private static final String CONFIG_PATH = "data/config.ini";
 	private static final String TEMPLATE_PATH = "data/config.ini.template";
 	
@@ -108,7 +102,8 @@ public class ConfigurationFile implements Configuration {
 			this.properties.load(stream);
 			
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Failed to load configuration file", e);
+			System.err.println("Failed to load configuration file");
+			System.err.println(e.getMessage());
 		}
 	}
 	
@@ -123,13 +118,13 @@ public class ConfigurationFile implements Configuration {
 		// create configuration directory if not found
 		if (!directory.exists()) {
 			directory.mkdirs();
-			LOGGER.info("Created new configuration directory " + directory.getAbsolutePath());
+			System.out.printf("Created new configuration directory %s\n", directory.getAbsolutePath());
 		}
 	
 		
 		// create configuration file if not found
 		if (!configFile.exists() && configFile.createNewFile()) {
-			LOGGER.info("Created new configuration file " + configFile.getAbsolutePath());
+			System.out.printf("Created new configuration file %s\n", configFile.getAbsolutePath());
 		}
 	}
 	
@@ -143,7 +138,7 @@ public class ConfigurationFile implements Configuration {
 		if (this.templateFile == null)
 			return;
 		
-		// input and output streams may fail, but they're autoclosable.
+		// input and output streams may fail, but they're auto-closeable.
 		// if defined in the "try-with-resources" statement, we don't
 		// have to close them in case of exceptions.
 		try (FileInputStream templateStream = new FileInputStream(templateFile.getAbsolutePath());
@@ -169,13 +164,14 @@ public class ConfigurationFile implements Configuration {
 			
 			// log the number of changes, should be visible in console.
 			if (propertiesAdded > 0) {
-				LOGGER.info("Loaded " + propertiesAdded + " new properties from template file.");
+				System.out.printf("Loaded %d new properties from template file.\n", propertiesAdded);
 			}
 			
 			// save configuration file
 			this.properties.store(outputStream, "Special characters have to be escaped");
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Failed to import values from template file", e);
+			System.err.println("Failed to import values from template file");
+			System.err.println(e.getMessage());
 		}
 	}
 }
