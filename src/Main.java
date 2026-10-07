@@ -1,8 +1,7 @@
-package dk.ucn.jgten.persistence;
+import common.Configuration;
+import common.ConfigurationFile;
 
-import dk.ucn.jgten.persistence.common.Configuration;
-import dk.ucn.jgten.persistence.common.ConfigurationFile;
-import dk.ucn.jgten.persistence.database.DBConnection;
+import database.DBConnection;
 
 public class Main {
 	public static void main(String[] args) {
