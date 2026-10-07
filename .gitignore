@@ -10,6 +10,9 @@ local.properties
 .loadpath
 .recommenders
 
+# Config files
+*.ini
+
 # External tool builders
 .externalToolBuilders/
 
