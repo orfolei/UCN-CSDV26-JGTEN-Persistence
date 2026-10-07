@@ -1,4 +1,4 @@
-package dk.ucn.jgten.persistence.model;
+package model;
 
 public class Product {
 	

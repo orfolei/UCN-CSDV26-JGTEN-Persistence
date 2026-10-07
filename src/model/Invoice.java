@@ -1,4 +1,4 @@
-package dk.ucn.jgten.persistence.model;
+package model;
 
 import java.time.LocalDate;
 

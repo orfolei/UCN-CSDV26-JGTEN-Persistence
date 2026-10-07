@@ -1,10 +1,10 @@
-package dk.ucn.jgten.persistence.common;
+package common;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -171,7 +171,7 @@ public class ConfigurationFile implements Configuration {
 			templateProperties.load(templateStream);
 		
 			int propertiesAdded = 0;
-			for (var entry : templateProperties.entrySet()) {
+			for (Entry<Object, Object> entry : templateProperties.entrySet()) {
 				if (this.properties.containsKey(entry.getKey()))
 					continue;
 				

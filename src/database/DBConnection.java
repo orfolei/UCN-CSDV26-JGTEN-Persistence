@@ -1,4 +1,4 @@
-package dk.ucn.jgten.persistence.database;
+package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,8 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import dk.ucn.jgten.persistence.common.Configuration;
-import dk.ucn.jgten.persistence.common.ConfigurationFile;
+import common.Configuration;
+
 
 public class DBConnection {
 	private Connection connection = null;
