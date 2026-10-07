@@ -8,9 +8,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import dk.ucn.jgten.persistence.common.Configuration;
+import dk.ucn.jgten.persistence.common.ConfigurationFile;
 
 public class DBConnection {
 	private Connection connection = null;
+	private static DBConnection dbConnection;
 	
 	private static final String DRIVER_CLASS = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	private static final String DEFAULT_SERVER_NAME = "127.0.0.1\\SQLEXPRESS";
@@ -25,7 +27,7 @@ public class DBConnection {
 	private String username;
 	private String password;
 	
-	public DBConnection(Configuration config) {
+	private DBConnection(Configuration config) {
 		this.serverAddress = config.get("db.server.name", DEFAULT_SERVER_NAME);
 		this.port = config.get("db.port", DEFAULT_PORT);
 		this.database = config.get("db.name", DEFAULT_DATABASE);
@@ -48,6 +50,13 @@ public class DBConnection {
 			System.out.println("Connection string was: " + connectionString.substring(0, connectionString.length() - password.length()) + "....");
 			e.printStackTrace();
 		}
+	}
+	
+	public static DBConnection getInstance() {
+		if(dbConnection == null) {
+			dbConnection = new DBConnection(ConfigurationFile.getInstance());
+		}
+		return dbConnection;
 	}
 	
 	public void startTransaction() throws SQLException {

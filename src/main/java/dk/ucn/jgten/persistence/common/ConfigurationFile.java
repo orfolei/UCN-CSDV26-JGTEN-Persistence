@@ -18,6 +18,8 @@ import java.util.logging.Logger;
 public class ConfigurationFile implements Configuration {
 	private static final Logger LOGGER = Logger.getLogger(ConfigurationFile.class.getName());
 	
+	private static ConfigurationFile configuration;
+	
 	private final File configFile;
 	private final File templateFile;
 	private final Properties properties;
@@ -27,7 +29,7 @@ public class ConfigurationFile implements Configuration {
 	 * @param templatePath path to a template file that should be initialized as
 	 * 		  the configuration file, if the configuration file does not exist.
 	 */
-	public ConfigurationFile(String configPath, String templatePath) {
+	private ConfigurationFile(String configPath, String templatePath) {
 		this.properties = new Properties();
 		this.configFile = new File(configPath).getAbsoluteFile();
 		
@@ -39,8 +41,21 @@ public class ConfigurationFile implements Configuration {
 		this.updateFromTemplate();
 	}
 	
-	public ConfigurationFile(String configPath) {
+	
+	
+	private ConfigurationFile(String configPath) {
 		this(configPath, null);
+	}
+	
+	public static ConfigurationFile getInstance() {
+		if (configuration == null) {
+			configuration = new ConfigurationFile(
+					"data/config.ini", 
+					"data/config.ini.template"
+			);
+		}
+		
+		return configuration;
 	}
 	
 	@Override
