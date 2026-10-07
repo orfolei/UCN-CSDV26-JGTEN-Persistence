@@ -9,7 +9,7 @@ import java.util.Properties;
 
 /**
  * Primitive file-based configuration system using the `.properties` file format.
- * Modified to fit the "Persistence" project, with verbose explanitory comments.
+ * Modified to fit the "Persistence" project, with verbose explanatory comments.
  * 
  * @author Nova Estrid Lautrup
  * @version 07-10-2026
@@ -43,7 +43,7 @@ public class ConfigurationFile implements Configuration {
 				? new File(templatePath).getAbsoluteFile()
 				: null;
 		
-		// grab values from config file
+		// grab values from config file on disk
 		this.load();
 		
 		// add any missing values from the template to our existing config file
