@@ -17,6 +17,8 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JList;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class PlaceOrder extends JFrame {
 
@@ -106,11 +108,16 @@ public class PlaceOrder extends JFrame {
 		centerPanel.add(btnProceed, gbc_btnProceed);
 		
 		JButton btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cancelClicked(); 
+			}
+		});
 		GridBagConstraints gbc_btnCancel = new GridBagConstraints();
 		gbc_btnCancel.gridx = 2;
 		gbc_btnCancel.gridy = 6;
 		centerPanel.add(btnCancel, gbc_btnCancel);
-		//	cancelClicked(); 
+		
 		
 		JPanel westPanel = new JPanel();
 		contentPane.add(westPanel, BorderLayout.WEST);
@@ -143,4 +150,8 @@ public class PlaceOrder extends JFrame {
 		westPanel.setLayout(gl_westPanel);
 
 	}
+	public void cancelClicked() {
+		FrontPage frontPage = new FrontPage();
+		frontPage.setVisible(true);
+		super.dispose();}
 }

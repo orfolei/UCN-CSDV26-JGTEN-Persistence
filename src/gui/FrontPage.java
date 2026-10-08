@@ -16,6 +16,7 @@ import java.awt.GridBagConstraints;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JRadioButton;
 
 public class FrontPage extends JFrame {
 
@@ -70,10 +71,18 @@ public class FrontPage extends JFrame {
 		middlePanel.setLayout(null);
 		
 		JButton btnPlaceOrder = new JButton("Place Order");
+		btnPlaceOrder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				createPlaceOrder();			
+			}
+		});
 		btnPlaceOrder.setBounds(150, 120, 150, 25);
 		middlePanel.add(btnPlaceOrder);
-
 	}
-	
 
+		public void createPlaceOrder() {
+			PlaceOrder createPlaceOffer = new PlaceOrder();
+			createPlaceOffer.setVisible(true);
+			super.setVisible(false);
+	}
 }
