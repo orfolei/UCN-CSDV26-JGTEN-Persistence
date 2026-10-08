@@ -13,6 +13,8 @@ import java.awt.FlowLayout;
 import javax.swing.JList;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ConfirmOrder extends JFrame {
 
@@ -98,7 +100,13 @@ public class ConfirmOrder extends JFrame {
 		JButton btnConfirm = new JButton("Confirm");
 		
 		JButton btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cancelClicked();
+			}
+		});
 		GroupLayout gl_panel = new GroupLayout(panel);
+		
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel.createSequentialGroup()
@@ -107,6 +115,7 @@ public class ConfirmOrder extends JFrame {
 					.addPreferredGap(ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
 					.addComponent(btnCancel, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
+				
 		);
 		gl_panel.setVerticalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
@@ -117,6 +126,7 @@ public class ConfirmOrder extends JFrame {
 						.addComponent(btnCancel, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)))
 		);
 		panel.setLayout(gl_panel);
+		
 		
 		JPanel centerPanel = new JPanel();
 		contentPane.add(centerPanel, BorderLayout.CENTER);
@@ -146,4 +156,8 @@ public class ConfirmOrder extends JFrame {
 		centerPanel.setLayout(gl_centerPanel);
 
 	}
+	public void cancelClicked() {
+		FrontPage frontPage = new FrontPage();
+		frontPage.setVisible(true);
+		super.dispose();}
 }

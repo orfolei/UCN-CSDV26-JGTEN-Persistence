@@ -13,6 +13,8 @@ import java.awt.GridBagConstraints;
 import javax.swing.JTextField;
 import java.awt.Insets;
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class AddCustomer extends JFrame {
 
@@ -151,11 +153,19 @@ public class AddCustomer extends JFrame {
 		centerPanel.add(btnConfirm, gbc_btnConfirm);
 		
 		JButton btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cancelClicked();
+			}
+		});
 		GridBagConstraints gbc_btnCancel = new GridBagConstraints();
 		gbc_btnCancel.gridx = 1;
 		gbc_btnCancel.gridy = 8;
 		centerPanel.add(btnCancel, gbc_btnCancel);
 
 	}
-
+	public void cancelClicked() {
+		FrontPage frontPage = new FrontPage();
+		frontPage.setVisible(true);
+		super.dispose();}
 }
