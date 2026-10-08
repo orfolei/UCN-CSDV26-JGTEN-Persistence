@@ -4,45 +4,47 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
-import data.DataAccessException;
-import model.Product;
 import model.Customer;
+import model.OrderLineItem;
 import model.SaleOrder;
 
 
 public class OrderDB {
 
-	private static final String createSaleOrder = 
+	private static final String createSaleOrder =
 			"select id, date, customer_id, freight_id, invoice_id";
-	private static final String addOrderLine = 
+	private static final String addOrderLine =
 			createSaleOrder + " where orderNo = ?";
-	private PreparedStatement selectAll; 
+	private PreparedStatement selectAll;
 	private PreparedStatement selectByPhoneNo;
-	
-	
+
+
 	public OrderDB() throws SQLException {
 		selectAll = DBConnection.getInstance().getConnection()
 				.prepareStatement(createSaleOrder);
 		selectByPhoneNo = DBConnection.getInstance().getConnection()
 				.prepareStatement(addOrderLine);
 	}
-	
-	
-	private Product buildObject(ResultSet rs) throws SQLException {
-		
 
-		SaleOrder saleOrder = new SaleOrder(
-				rs.getInt("orderNo"),
-				rs.getDate("date"),
-				rs.getBoolean("deliveryStatus"),
-				rs.getDate("deliveryDate"),
-				rs.getDouble("discountGiven"),
-				new Customer(rs.getInt("id")),
+
+	private static final String selectAllQ =
+			"SELECT s.id, s.date, s.deliveryState, c.name, c.address, c.zipCode, ci.city, c.phoneNo, c.customerType "
+					+ "FROM SaleOrder s " + "JOIN customer c ON c.id = s.customer_id "
+					+ "JOIN city ci ON ci.zipCode = c.zipCode";
+
+	private SaleOrder buildObject(ResultSet rs) throws SQLException {
+		Customer customer = new Customer(rs.getString("name"), rs.getString("address"), rs.getInt("zipCode"),
+				rs.getString("city"), rs.getInt("phoneNo"), rs.getString("customerType")
+		);
+
+		return new SaleOrder(rs.getInt("id"), rs.getDate("date").toLocalDate(),
+				"delivered".equals(rs.getString("deliveryState")),
+				null, // deliveryDate findes ikke i tabellen
+				0.0, // discount findes ikke i tabellen
+				customer,
 				new ArrayList<OrderLineItem>()
-				)
-		
+		);
 	}
-	
+
 }

@@ -13,6 +13,9 @@ local.properties
 # Config files
 *.ini
 
+#bruh
+*.uxf
+
 # External tool builders
 .externalToolBuilders/
 

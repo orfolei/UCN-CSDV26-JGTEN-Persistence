@@ -2,7 +2,6 @@ package database;
 
 import java.util.List;
 
-import data.DataAccessException;
 import model.Product;
 
 public interface ProductDAO {

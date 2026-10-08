@@ -1,4 +1,4 @@
-package data;
+package database;
 
 import java.sql.SQLException;
 
@@ -14,6 +14,6 @@ public class DataAccessException extends Exception {
     }
 
 	public DataAccessException(SQLException e, String string) {
-		// TODO Auto-generated constructor stub
+		super(string, e);
 	}
 }

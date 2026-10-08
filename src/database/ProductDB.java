@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.DataAccessException;
 import model.Product;
 
 public class ProductDB implements ProductDAO {
