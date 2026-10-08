@@ -100,6 +100,8 @@ id int IDENTITY(1,1) PRIMARY KEY NOT NULL,
 "address" varchar(64),
 zipCode int,
 phoneNo int,
+customerType varchar(16),
+
 CONSTRAINT fk_customer_zipcode
 	FOREIGN KEY(zipCode)
 	REFERENCES city (zipCode)

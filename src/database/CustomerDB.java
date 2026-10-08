@@ -2,6 +2,8 @@ package database;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+// comment her... sqlexception pakker vi ind i vores egen, so mresten af programmet forstår
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -10,17 +12,22 @@ import java.util.List;
 import model.Customer;
 
 public class CustomerDB implements CustomerDAO {
+	
+	// henter kunden og deres by osv fra zipcode-city tabellen. derfor joiner det-t
 	private static final String selectAllQ =
 			"select c.id, c.name, c.address, c.zipCode, ci.city, c.phoneNo, c.customerType"
-					+ " FROM customer c join city ci on ci.zipCode = c.zipCode";
+					+ " FROM customer c JOIN city ci on ci.zipCode = c.zipCode";
+	// samme som over bare med filter "?" kommer fra findByPhoneNumber-t
 	private static final String selectByPhoneNumberQ =
 			selectAllQ + " where c.phoneNo = ?";
+	// customertype er club eller private og bruges til discount og freight-t
 	private static final String insertQ = "INSERT INTO customer (name,address,zipCode,phoneNo,customerType)"
 			+ "VALUES (?,?,?,?,?)";
 	private PreparedStatement selectAll;
 	private PreparedStatement selectByPhoneNo;
 	private PreparedStatement insert;
 
+	// queries en gang i constructor og reuse sådan vi ik skal lave dem hele tiden-t
 	public CustomerDB() throws SQLException {
 		selectAll = DBConnection.getInstance().getConnection()
 				.prepareStatement(selectAllQ);
@@ -41,6 +48,7 @@ public class CustomerDB implements CustomerDAO {
 		}
 	}
 
+	// finder ud fra tlf nr, null hvis ingen har nummeret, anden metode skal tjekke null -t
 	@Override
 	public Customer findByPhoneNumber(int phoneNo) throws DataAccessException {
 		try {

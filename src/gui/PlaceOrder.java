@@ -20,53 +20,89 @@ import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import java.sql.SQLException;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import controller.ProductController;
+import database.DataAccessException;
+import model.Product;
+
+import controller.OrderController;
+import model.SaleOrder;
+
 public class PlaceOrder extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtSearch;
 	private JTextField textField;
+	private JTable tableProducts;
+	private DefaultTableModel tableModel;
+	
+	private OrderController orderController;
+	private SaleOrder order;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					PlaceOrder frame = new PlaceOrder();
+					PlaceOrder frame = new PlaceOrder(orderController, order);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
-	}
+	}  // Denne main metode er redundant - t
 
 	/**
 	 * Create the frame.
 	 */
-	public PlaceOrder() {
+	public PlaceOrder(OrderController orderController, SaleOrder order) {
+		
+		this.orderController = orderController;
+		this.order = order;
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 1280, 720);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
+		// laver et table som viser produkter
+		tableModel = new DefaultTableModel(new String[] {
+				"Varenr.", "Navn", "Pris"}, 0) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		tableProducts = new JTable(tableModel);
+		contentPane.add(new JScrollPane(tableProducts), BorderLayout.NORTH);
+		
+		fillProductTable();
+		// fylder ^
+		
 		JPanel northPanel = new JPanel();
 		contentPane.add(northPanel, BorderLayout.NORTH);
 		
-		JLabel lblPlaceOrder = new JLabel("Howdy Pardner, please place your order");
+		JLabel lblPlaceOrder = new JLabel("Howdy Partner, please place your order");
 		northPanel.add(lblPlaceOrder);
 		
 		JPanel centerPanel = new JPanel();
 		contentPane.add(centerPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_centerPanel = new GridBagLayout();
 		gbl_centerPanel.columnWidths = new int[]{0, 0, 0, 0};
-		gbl_centerPanel.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 31, 0};
+		gbl_centerPanel.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_centerPanel.columnWeights = new double[]{1.0, 1.0, 0.0, Double.MIN_VALUE};
-		gbl_centerPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_centerPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		centerPanel.setLayout(gbl_centerPanel);
 		
 		JLabel lblWare = new JLabel("Ware:");
@@ -93,18 +129,23 @@ public class PlaceOrder extends JFrame {
 		centerPanel.add(textField, gbc_textField);
 		textField.setColumns(10);
 		
-		JButton btnAdd = new JButton("Add to Cart");
+		JButton btnAdd = new JButton("Læg i kurv");
 		GridBagConstraints gbc_btnAdd = new GridBagConstraints();
 		gbc_btnAdd.insets = new Insets(0, 0, 0, 5);
 		gbc_btnAdd.gridx = 0;
-		gbc_btnAdd.gridy = 6;
+		gbc_btnAdd.gridy = 21;
 		centerPanel.add(btnAdd, gbc_btnAdd);
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				addClicked();
+			}
+		});
 		
 		JButton btnProceed = new JButton("Proceed");
 		GridBagConstraints gbc_btnProceed = new GridBagConstraints();
 		gbc_btnProceed.insets = new Insets(0, 0, 0, 5);
 		gbc_btnProceed.gridx = 1;
-		gbc_btnProceed.gridy = 6;
+		gbc_btnProceed.gridy = 21;
 		centerPanel.add(btnProceed, gbc_btnProceed);
 		
 		JButton btnCancel = new JButton("Cancel");
@@ -115,7 +156,7 @@ public class PlaceOrder extends JFrame {
 		});
 		GridBagConstraints gbc_btnCancel = new GridBagConstraints();
 		gbc_btnCancel.gridx = 2;
-		gbc_btnCancel.gridy = 6;
+		gbc_btnCancel.gridy = 21;
 		centerPanel.add(btnCancel, gbc_btnCancel);
 		
 		
@@ -125,6 +166,8 @@ public class PlaceOrder extends JFrame {
 		txtSearch = new JTextField();
 		txtSearch.setText("Search...");
 		txtSearch.setColumns(10);
+		
+		
 		
 		JList list = new JList();
 		GroupLayout gl_westPanel = new GroupLayout(westPanel);
@@ -153,5 +196,57 @@ public class PlaceOrder extends JFrame {
 	public void cancelClicked() {
 		FrontPage frontPage = new FrontPage();
 		frontPage.setVisible(true);
-		super.dispose();}
+		super.dispose();
+		}
+	
+	// vi skal ahve ting i table
+	private void fillProductTable() {
+		try {
+			// lav productcontrolleren
+			ProductController productController = new ProductController();
+			// brug productcontrollerens funktion til at hente det hele
+			List<Product> products = productController.findAll();
+			
+			tableModel.setRowCount(0); //tøm den før der vises, jic
+			
+			// loop til at hentet tingene og lægge dem i rows i tabellen
+			for (Product p : products) {
+				tableModel.addRow(new Object[] {
+						p.getProductNumber(),
+						p.getName(),
+						p.getPrice().getPrice()
+				});
+			}
+			// åbenlys fejlfanger
+		} catch (SQLException | DataAccessException e) {
+				JOptionPane.showMessageDialog(this, "Fejl ved hentning " + e.getMessage());
+			}
+		}
+	
+	// interaction med tabellen sådan man kan tilføje uden atk ende id men kan trykke på tingene i tabellen
+	private void addClicked() {
+		int row = tableProducts.getSelectedRow();
+		//åbenlyst tjek efter om der er valgt noget
+		if (row == -1 /*  -1 er rækken som er valgt hvis intet er valgt */) {
+			JOptionPane.showMessageDialog(this, "Du skal vælge en vare i tabellen!");
+			return;
+		}
+		
+		try {
+			// hent det valgte produkt fra tabellen der hvor man har trykket
+			int productNumber = (int) tableModel.getValueAt(row, 0);
+			// den mængde som der er indtastet
+			int quantity = Integer.parseInt(textField.getText().trim());
+			
+			// tilføj til orderline
+			orderController.addOrderLine(order, productNumber, quantity);
+			
+			// generic fejl som kan ske og skal forhindres
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(this, "Antal skal være et tal!!");
+		} catch (DataAccessException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage());
+		}
+	}
+	
 }

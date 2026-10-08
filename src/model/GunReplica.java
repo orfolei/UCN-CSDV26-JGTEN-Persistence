@@ -7,8 +7,8 @@ public class GunReplica extends Product{
 
 	
 	
-	public GunReplica(int productNumber, String name, int minStock, int reservedQty) {
-		super(productNumber, name, minStock, reservedQty);
+	public GunReplica(int productNumber, String name, int reservedQty) {
+		super(productNumber, name, reservedQty);
 		
 	}
 	

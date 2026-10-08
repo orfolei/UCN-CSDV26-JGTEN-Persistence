@@ -74,6 +74,7 @@ public class DBConnection {
 		connection.setAutoCommit(true);
 	}
 	
+	// returnerer det id databasen har givet den nye række (altså "IDENTITY" i sql) sådan vi kan bruge det som foreign key fx orderId til OrderLineItem -t
 	public int executeInsertWithIdentity(PreparedStatement ps) throws SQLException  {
 		int res = -1;
 		try {

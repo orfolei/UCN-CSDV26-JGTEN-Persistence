@@ -6,8 +6,8 @@ public class Equipment extends Product{
 	private String style;
 	
 	
-	public Equipment(int productNumber, String name, int minStock, int reservedQty) {
-		super(productNumber, name, minStock, reservedQty);
+	public Equipment(int productNumber, String name, int reservedQty) {
+		super(productNumber, name, reservedQty);
 		
 	}
 }

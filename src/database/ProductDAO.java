@@ -8,6 +8,6 @@ public interface ProductDAO {
 
 	List<Product> findAll() throws DataAccessException;
 
-	Product findById(int productNumber) throws DataAccessException;
+	Product findByNumber(int productNumber) throws DataAccessException;
 
 }

@@ -1,28 +1,37 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Product {
 	
 	
 
-
+	private int id;
 	private int productNumber;
 	private String name;
-	private int minStock;
 	private int reservedQty;
 	
 	private Supplier supplier;
 	private Price price;
 	
+	// liste med stock af products
+	private ArrayList<Stock> stockList = new ArrayList<>();
 	
-	public Product(int productNumber ,  String name, int minStock, int reservedQty)
+	public Product(int productNumber ,  String name, int reservedQty)
 	{
 		this.productNumber = productNumber;
 		this.name = name;
-		this.minStock = minStock;
 		this.reservedQty = reservedQty;
 		
 	}
 	
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
 	
 	public int getProductNumber() {
 		return productNumber;
@@ -42,22 +51,18 @@ public class Product {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-
-	public int getMinStock() {
-		return minStock;
-	}
-
-
-	public void setMinStock(int minStock) {
-		this.minStock = minStock;
-	}
-
-
+	
 	public int getReservedQty() {
 		return reservedQty;
 	}
 
+	public ArrayList<Stock> getStockList(){
+		return stockList;
+	}
+	
+	public void addStock(Stock stock) {
+		stockList.add(stock);
+	}
 
 	public void setReservedQty(int reservedQty) {
 		this.reservedQty = reservedQty;
