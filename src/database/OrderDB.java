@@ -28,10 +28,9 @@ public class OrderDB {
 	}
 
 
-	private static final String selectAllQ =
-			"SELECT s.id, s.date, s.deliveryState, c.name, c.address, c.zipCode, ci.city, c.phoneNo, c.customerType "
-					+ "FROM SaleOrder s " + "JOIN customer c ON c.id = s.customer_id "
-					+ "JOIN city ci ON ci.zipCode = c.zipCode";
+	private static final String selectAllQ = "select s.id, s.date, s.deliveryState, c.name, c.address, c.zipCode, ci.city, c.phoneNo "
+			+ "from SaleOrder s " + "join customer c on c.id = s.customer_id "
+			+ "join city ci on ci.zipCode = c.zipCode";
 
 	private SaleOrder buildObject(ResultSet rs) throws SQLException {
 		Customer customer = new Customer(rs.getString("name"), rs.getString("address"), rs.getInt("zipCode"),
