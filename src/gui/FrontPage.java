@@ -73,16 +73,16 @@ public class FrontPage extends JFrame {
 		JButton btnPlaceOrder = new JButton("Place Order");
 		btnPlaceOrder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				createPlaceOrder();			
+				createAddCustomer();			
 			}
 		});
 		btnPlaceOrder.setBounds(150, 120, 150, 25);
 		middlePanel.add(btnPlaceOrder);
 	}
 
-		public void createPlaceOrder() {
-			PlaceOrder createPlaceOffer = new PlaceOrder();
-			createPlaceOffer.setVisible(true);
+		public void createAddCustomer() {
+			AddCustomer createAddCustomer = new AddCustomer();
+			createAddCustomer.setVisible(true);
 			super.setVisible(false);
 	}
 }
