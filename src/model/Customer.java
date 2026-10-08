@@ -9,7 +9,11 @@ public class Customer {
 	private int phoneNo;
 	private String customerType;
 	
+	private int id;
 	
+	
+
+
 	public Customer(String name, String address, int zipCode, String city, int phoneNo, String customerType) {
 		super();
 		this.name = name;
@@ -18,6 +22,10 @@ public class Customer {
 		this.city = city;
 		this.phoneNo = phoneNo;
 		this.customerType = customerType;
+	}
+	public Customer(int id)
+	{
+		this.id = id;
 	}
 	
 	
@@ -80,4 +88,17 @@ public class Customer {
 	public void setCustomerType(String customerType) {
 		this.customerType = customerType;
 	}
+	
+
+	
+	public int getId() {
+		return id;
+	}
+
+
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 }
