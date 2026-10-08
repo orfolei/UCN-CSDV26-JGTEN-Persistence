@@ -6,63 +6,65 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Breed;
-import model.Dog;
-import model.Group;
+import data.DataAccessException;
+import model.Customer;
 
 public class CustomerDB implements CustomerDAO {
 	private static final String selectAllQ = 
-			"select id, name, description from groups";
+			"select id, name, address, zipCode, phoneNo";
 	private static final String selectByIDQ = 
-			selectAllQ + " where id = ?";
+			selectAllQ + " where phoneNo = ?";
 	private PreparedStatement selectAll; 
-	private PreparedStatement selectByID;
+	private PreparedStatement selectByPhoneNo;
 	
-	public GroupDB() throws SQLException {
+	public CustomerDB() throws SQLException {
 		selectAll = DBConnection.getInstance().getConnection()
 				.prepareStatement(selectAllQ);
-		selectByID = DBConnection.getInstance().getConnection()
+		selectByPhoneNo = DBConnection.getInstance().getConnection()
 				.prepareStatement(selectByIDQ);
 	}
 	
 	@Override
-	public List<Group> findAll() throws DataAccessException  {
+	public List<Customer> findAll() throws DataAccessException  {
 		try {
 			ResultSet rs = selectAll.executeQuery();
-			List<Group> res = buildObjects(rs);
+			List<Customer> res = buildObjects(rs);
 			return res;
 		} catch (SQLException e) {
-			DataAccessException he = new DataAccessException(e, "Could not find all");
+			DataAccessException he = new DataAccessException("Could not find all", e);
 			throw he;
 		}
 	}
 
 	@Override
-	public Group findById(int id) throws DataAccessException {
+	public Customer findById(int phoneNo) throws DataAccessException {
 		try {
-			selectByID.setInt(1, id);
-			ResultSet rs = selectByID.executeQuery();
-			Group g = null;
+			selectByPhoneNo.setInt(1, phoneNo);
+			ResultSet rs = selectByPhoneNo.executeQuery();
+			Customer c = null;
 			if(rs.next()) {
-				g = buildObject(rs);
+				c = buildObject(rs);
 			}
-			return g;
+			return c;
 		} catch (SQLException e) {
-			throw new DataAccessException(e, "Could not find by id = " + id);
+			throw new DataAccessException(e, "Could not find by phoneNo = " + phoneNo);
 		}
 	}
 
-	private Group buildObject(ResultSet rs) throws SQLException {
-		Group g = new Group(
-				rs.getInt("id"),
+	private Customer buildObject(ResultSet rs) throws SQLException {
+		Customer c = new Customer(
 				rs.getString("name"),
-				rs.getString("description")
+				rs.getString("address"),
+				rs.getInt("zipCode"),
+				rs.getString("city"),
+				rs.getInt("phoneNo"),
+				rs.getString("customerType")
 				);
-		return g;
+		return c;
 	}
 
-	private List<Group> buildObjects(ResultSet rs) throws SQLException {
-		List<Group> res = new ArrayList<>();
+	private List<Customer> buildObjects(ResultSet rs) throws SQLException {
+		List<Customer> res = new ArrayList<>();
 		while(rs.next()) {
 			res.add(buildObject(rs));
 		}
