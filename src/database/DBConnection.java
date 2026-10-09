@@ -1,5 +1,8 @@
 package database;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -123,6 +126,25 @@ public class DBConnection {
 	}
 	
 	
+	// kører et helt .sql-script (fx data/testdata.sql) i én transaktion -t
+	public void executeScript(String path) throws SQLException, IOException {
+		String sql = Files.readString(Path.of(path));
+		// "use <db>" fjernes, så scriptet kører mod den database vi allerede er forbundet til
+		sql = sql.replaceFirst("(?i)^\\s*use .*", "");
+		startTransaction();
+		try (Statement s = connection.createStatement()) {
+			// løb alle resultater igennem, ellers opdager vi ikke fejl længere nede i scriptet
+			boolean isResultSet = s.execute(sql);
+			while (isResultSet || s.getUpdateCount() != -1) {
+				isResultSet = s.getMoreResults();
+			}
+			commitTransaction();
+		} catch (SQLException e) {
+			rollbackTransaction();
+			throw e;
+		}
+	}
+
 	public Connection getConnection() {
 		return connection;
 	}

@@ -17,6 +17,9 @@ import java.awt.SystemColor;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JRadioButton;
+import javax.swing.JOptionPane;
+
+import controller.ProductController;
 
 public class FrontPage extends JFrame {
 
@@ -78,6 +81,24 @@ public class FrontPage extends JFrame {
 		});
 		btnPlaceOrder.setBounds(150, 120, 150, 25);
 		middlePanel.add(btnPlaceOrder);
+
+		JButton btnRestock = new JButton("Restock");
+		btnRestock.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				restock();
+			}
+		});
+		btnRestock.setBounds(150, 155, 150, 25);
+		middlePanel.add(btnRestock);
+	}
+
+	public void restock() {
+		try {
+			new ProductController().restock();
+			JOptionPane.showMessageDialog(this, "Lagrene er fyldt op igen!");
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Restock fejlede: " + e.getMessage());
+		}
 	}
 
 		public void createAddCustomer() {
