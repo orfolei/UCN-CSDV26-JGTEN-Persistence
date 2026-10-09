@@ -25,4 +25,12 @@ public class CustomerController {
 	public void createCustomer(Customer customer) throws DataAccessException {
 		customerDAO.create(customer);
 	}
+
+	public Customer createCustomer(String name, String address, int zipCode, int phoneNo, String customerType)
+			throws DataAccessException {
+		Customer customer = new Customer(name, address, zipCode, null, phoneNo, customerType);
+		customerDAO.create(customer);
+		// hent den igen, så modellen bygges af db-laget med bynavn fra city-tabellen
+		return customerDAO.findByPhoneNumber(phoneNo);
+	}
 }
